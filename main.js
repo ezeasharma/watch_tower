@@ -4,7 +4,7 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 app.get('/', function(request, response, next){
-	response.send('Welcome to Watch Tower!');
+	response.send('Welcome to Watch Tower microservice !');
 });
 
 
