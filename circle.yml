@@ -1,0 +1,19 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+
+test:
+  override:
+    - echo "no tests yet =("
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker build -t ezeasharma/watch_tower .
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push ezeasharma/watch_tower
