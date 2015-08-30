@@ -14,6 +14,6 @@ deployment:
   hub:
     branch: master
     commands:
-      - docker build -t ezeasharma/watch_tower:$Build .
+      - docker build -t ezeasharma/watch_tower:$CIRCLE_BUILD_NUM  .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push ezeasharma/watch_tower:Build
+      - docker push ezeasharma/watch_tower:$CIRCLE_BUILD_NUM 
