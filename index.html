@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Watch Tower</title>
+	<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+  	<script type="text/javascript" src="index.js"></script>
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+	<style>
+		#rulesSelection {
+			border-radius:1em;
+			background: transparent;
+			width: 50%;
+			padding: 5px;
+			font-size: 20px;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			border-color: skyblue;
+		}
+		
+		#amountTextBox{
+			
+			border-radius:1em;
+			width: 7%;
+			margin: 10px;
+			background: transparent;
+			font-size: 20px;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			border-color: skyblue;
+		}
+		
+		#symbolTextBox
+		{
+			border-radius:2em;
+			width: 7%;
+			margin: 10px;
+			background: transparent;
+			font-size: 20px;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			border-color: skyblue;
+		}
+		#expressionTextBox
+		{
+			border-radius:1em;
+			width: 37%;
+			margin: 10px;
+			background: transparent;
+			font-size: 20px;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			border-color: skyblue;
+		}
+		#updateButton{
+		
+			border-radius:2em;
+			margin: 10px; 
+		}	
+		
+		#checkComplainceButton{
+			border-radius:2em;
+			margin: 10px;
+		}
+		
+
+	#portfolioSelect{
+		border-radius:1em;
+		background: transparent;	
+		padding: 2px;
+		font-size: 20px;
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		border-color: skyblue;
+	}
+	#actionSelectDropdown
+	{
+			border-radius:1em;
+			background: transparent;	
+			padding: 2px;
+			font-size: 20px;
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			border-color: skyblue;
+	}	
+	</style>
+</head>
+<body>
+	<h1 id="headingTag"></h1>
+	<select id="rulesSelection" >
+		<option value="loading">Loading......</option>
+	</select></br>
+	<h3 id = "descriptionTag"></h3>
+	<div id="expression_div"></div>
+	<div id="allocation">
+		<h3>Enter Allocation</h3>
+		<label>Action: </label>
+		<select id="actionSelectDropdown">
+			<option value="Buy">Buy</option>
+			<option value="Sell">Sell</option>
+		</select>
+		<label>Amount: </label><input type="text" id="amountTextBox"></input>
+		<label>Symbol: </label><input type="text" id="symbolTextBox"></input>
+		<label>Portfolio: </label><select id="portfolioSelect"></select> 
+		<button id="checkComplainceButton" type="button" class="button-success pure-button">Check Complaince</button>
+		<br/><br/>
+	</div>
+	<div id="stockDiv">
+		
+	</div>
+</body>
+</html>
