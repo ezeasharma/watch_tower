@@ -16,9 +16,11 @@ $(function(){
 	headingTag.text("Welcome to Watch Tower!");
 	var expressionDiv = undefined;
 	var stockTableDiv = undefined;
+	var complianceResultRowTemplate = '<tr data-Id="{Rule}"><td>{Rule}</td><td>{Result}</td></tr>';
+	var complianceResultTableTemplate    = '<table class="pure-table" id="complianceResultTable"><thead><tr><th>Rule</th><th>Result</th></thead></table>';
 	
 	var stockTableRowTemplate = '<tr data-Id="{Symbol}"><td>{Symbol}</td><td>{Name}</td><td>{LastPrice}</td><td>{Change}</td><td>{ChangePercent}</td><td>{Volume}</td><td>{ChangeYTD}</td><td>{High}</td><td>{Low}</td><td>{Open}</td></tr>';
-	var stockTableTemplate    = '<table class="pure-table" id="stockDetailsTable"><thead><tr><th>Symbol</th><th>Name</th><th>LastPrice</th><th>Change</th><th>ChangePercent</th><th>Volume</th><th>ChangeYTD</th><th>High</th><th>Low</th><th>Open</th></tr></thead>'
+	var stockTableTemplate    = '<table class="pure-table" id="stockDetailsTable"><thead><tr><th>Symbol</th><th>Name</th><th>LastPrice</th><th>Change</th><th>ChangePercent</th><th>Volume</th><th>ChangeYTD</th><th>High</th><th>Low</th><th>Open</th></tr></thead></table>';
 	$.get("/Rules", function(data){
 		rules = data;
 		var rulesSelection = $('#rulesSelection');
@@ -49,29 +51,15 @@ $(function(){
 		var amount = $('#amountTextBox').val();
 		var portfolio = $('#portfolioSelect').val();
 		var action = $('#actionSelectDropdown').val();
-		$.post("/Compliance", {Symbol : sym, Amount : amount, Portfolio : portfolio, Action : action}, function(data){
-			console.log(data);
-			console.log(data.Symbol);
-			stockTableDiv = $('#stockDiv');
-			stockTableDiv.empty();
-			stockTableDiv.html('<table class="pure-table" id="stockDetailsTable"><thead><tr><th>Name</th><th>Symbol</th><th>LastPrice</th><th>Change</th><th>ChangePercent</th><th>Volume</th><th>ChangeYTD</th><th>High</th><th>Low</th><th>Open</th></tr></thead>')
-			var stockTable = $('#stockDetailsTable');
-			var rowData = stockTableRowTemplate.supplant(data);
-			//var row = stockTable.find('tr[data-Id=' + this.Id + ']');
-			stockTable.append(rowData);
-		});
+		$.post("/Compliance", {Symbol : sym, Amount : amount, Portfolio : portfolio, Action : action})
+		.done(function(data) {
+    		populateResultUi(data);
+  		})
+  		.fail(function(xhr) {
+			console.log(xhr);
+    		alert(xhr.status + ' ' + xhr.responseText);
+  		});
 	});
-	
-	
-	var expressionFunctionTemplate = 'return #;'  
-	function TestExpression()
-	{
-		var expression = $('#expressionTextBox').val();
-		var functionExpressionAsString = expressionFunctionTemplate.replace('#', expression);
-		var functionExpression = new Function('alloc', 'price', 'portfolio', functionExpressionAsString);
-		var result = functionExpression({Amount : 10}, {Last : 11}, {});
-		alert(result);
-	}
 	
 	$('#rulesSelection').change(function(){
 		if(typeof(rules) == 'undefined')
@@ -90,13 +78,37 @@ $(function(){
 									'<button type="button" id="updateButton" class="button-success pure-button">Update</button>');
 					var updateButton = $('#updateButton');
 					updateButton.click(function(){
-						TestExpression();
+						//TestExpression();
 					});
 				}
 				var expressionTextBox = $('#expressionTextBox');
 				expressionTextBox.val(rules[i].Expression);
-				expressionTextBox.attr('size', "100");
 			}
 		}
 	});
+	
+	function populateResultUi(data)
+	{
+		stockTableDiv = $('#stockDiv');
+		stockTableDiv.empty();
+		stockTableDiv.html(stockTableTemplate);
+		var stockTable = $('#stockDetailsTable');
+		var rowData = stockTableRowTemplate.supplant(data.Price);
+		//var row = stockTable.find('tr[data-Id=' + this.Id + ']');
+		stockTable.append(rowData);
+		
+		var complianceResultDiv = $('#complianceResultsDiv');
+		complianceResultDiv.empty();
+		complianceResultDiv.html(complianceResultTableTemplate);
+		var complianceTable = $('#complianceResultTable');
+		for(var i = 0; i < data.ComplianceResults.length; i++)
+		{
+			complianceTable.append(complianceResultRowTemplate.supplant(data.ComplianceResults[i]));
+			if(data.ComplianceResults[i].Result.toUpperCase() == "FAIL")
+			{
+				var row = complianceTable.find('tr[data-Id=' + data.ComplianceResults[i].Rule + ']');
+				row.css("background-color", "#cd5c5c");
+			}
+		}
+	}
 });
