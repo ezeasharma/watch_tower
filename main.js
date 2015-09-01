@@ -26,9 +26,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 var complianceRules = new Array();
-complianceRules.push({Name : "MarketValueRule" , Description : "Trade only when marketValue should be more than 10000", Expression : "alloc.Amount * price.LastPrice > 10000"});
-complianceRules.push({Name : "VolumeRule" , Description : "Trade only when Volume is greater then 200000", Expression : " price.Volume > 200000"});
-complianceRules.push({Name : "RestrictedSecurityRule" , Description : "Cannot trade symbol IBM", Expression : 'alloc.Symbol != "IBM"'});
+complianceRules.push({Name : "Market_Value_Rule" , Description : "Trade only when marketValue should be more than 10000", Expression : "alloc.Amount * price.LastPrice > 10000"});
+complianceRules.push({Name : "Volume_Rule" , Description : "Trade only when Volume is greater then 200000", Expression : " price.Volume > 200000"});
+complianceRules.push({Name : "Restricted_Security_Rule" , Description : "Cannot trade symbol IBM", Expression : 'alloc.Symbol != "IBM"'});
+complianceRules.push({Name : "Restricted_Portfolio_Symbol_Rule", Description: "Ashish cannot trade AAPL", Expression : '!(alloc.Symbol == "AAPL" && alloc.Portfolio == "Ashish")'})
 	
 
 app.get('/', function(req, res){
@@ -66,7 +67,6 @@ app.post('/Compliance', function(req, res){
 	console.log(req.body.Action + req.body.Amount, req.body.Symbol + req.body.Portfolio);
 	var success = function(result)
 	{
-		console.log(result);
 		var price = JSON.parse(result);
 		var expressionFunctionTemplate = 'return #;'
 		var complianceResults=[];
@@ -76,7 +76,7 @@ app.post('/Compliance', function(req, res){
 			var functionExpressionAsString = expressionFunctionTemplate.replace('#', expression);
 			console.log(functionExpressionAsString);
 			var functionExpression = new Function('alloc', 'price', 'portfolio', functionExpressionAsString);
-			var alloc = {Amount : req.body.Amount, Symbol : req.body.Symbol.toUpperCase(), Portfolio : req.body.Portfolio.toUpperCase(), Action : req.body.Action};
+			var alloc = {Amount : req.body.Amount, Symbol : req.body.Symbol.toUpperCase(), Portfolio : req.body.Portfolio, Action : req.body.Action};
 			var resultStatus = "Fail";
 			if(functionExpression(alloc, price, {}))
 				resultStatus = "Pass";

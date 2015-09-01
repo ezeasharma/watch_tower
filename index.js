@@ -15,7 +15,6 @@ $(function(){
 	var headingTag = $('#headingTag');
 	headingTag.text("Welcome to Watch Tower!");
 	var expressionDiv = undefined;
-	var stockTableDiv = undefined;
 	var complianceResultRowTemplate = '<tr data-Id="{Rule}"><td>{Rule}</td><td>{Result}</td></tr>';
 	var complianceResultTableTemplate    = '<table class="pure-table" id="complianceResultTable"><thead><tr><th>Rule</th><th>Result</th></thead></table>';
 	
@@ -51,6 +50,8 @@ $(function(){
 		var amount = $('#amountTextBox').val();
 		var portfolio = $('#portfolioSelect').val();
 		var action = $('#actionSelectDropdown').val();
+		$('#stockDiv').html("<h3>Loading Compliance Results......</h3>");
+		$('#complianceResultsDiv').html("<h3>Loading Security......</h3>");
 		$.post("/Compliance", {Symbol : sym, Amount : amount, Portfolio : portfolio, Action : action})
 		.done(function(data) {
     		populateResultUi(data);
@@ -109,7 +110,8 @@ $(function(){
 	
 	function populateResultUi(data)
 	{
-		stockTableDiv = $('#stockDiv');
+		var stockTableDiv = $('#stockDiv');
+		var complianceResultDiv = $('#complianceResultsDiv');
 		stockTableDiv.empty();
 		stockTableDiv.html(stockTableTemplate);
 		var stockTable = $('#stockDetailsTable');
@@ -117,7 +119,7 @@ $(function(){
 		//var row = stockTable.find('tr[data-Id=' + this.Id + ']');
 		stockTable.append(rowData);
 		
-		var complianceResultDiv = $('#complianceResultsDiv');
+		
 		complianceResultDiv.empty();
 		complianceResultDiv.html(complianceResultTableTemplate);
 		var complianceTable = $('#complianceResultTable');
