@@ -64,28 +64,48 @@ $(function(){
 	$('#rulesSelection').change(function(){
 		if(typeof(rules) == 'undefined')
 			return;
-		var description = $( "#rulesSelection option:selected" ).text();
+		var name = $( "#rulesSelection option:selected" ).text();
+				
+		if(typeof(expressionDiv) == "undefined"){
+			expressionDiv = $('#expression_div');
+			expressionDiv.html('<label>Expression: </label>' +
+							'<input type="text" id="expressionTextBox" value="" class="pure-input-rounded"/>' +
+							'<button type="button" id="updateButton" class="button-success pure-button">Update</button>');
+			var updateButton = $('#updateButton');
+			updateButton.click(function(){
+				updateRule();
+			});
+		}
+	
 		for(var i = 0; i < rules.length; i++)
 		{
-			if(rules[i].Name == description)
+			if(rules[i].Name == name)
 			{
 				$('#descriptionTag').text('Description: ' + rules[i].Description);
-				$('#descriptionTestBox').text("Some expression");
-				if(typeof(expressionDiv) == "undefined"){
-					expressionDiv = $('#expression_div');
-					expressionDiv.html('<label>Expression: </label>' +
-									'<input type="text" id="expressionTextBox" value="" class="pure-input-rounded"/>' +
-									'<button type="button" id="updateButton" class="button-success pure-button">Update</button>');
-					var updateButton = $('#updateButton');
-					updateButton.click(function(){
-						//TestExpression();
-					});
-				}
 				var expressionTextBox = $('#expressionTextBox');
 				expressionTextBox.val(rules[i].Expression);
 			}
 		}
 	});
+	
+	function updateRule()
+	{
+		var name = $( "#rulesSelection option:selected" ).text();
+		var expression = $('#expressionTextBox').val();
+		$.post("/Rules", {Name : name, Expression : expression})
+		.done(function(data) {
+			$('#expressionTextBox').val(expression);
+			for(var i = 0; i < rules.length; i++)
+			{
+				if(rules[i].Name == name)
+					rules[i].Expression = expression;
+			}
+		})
+  		.fail(function(xhr) {
+			console.log(xhr);
+    		alert(xhr.status + ' ' + xhr.responseText);
+  		});
+	}
 	
 	function populateResultUi(data)
 	{

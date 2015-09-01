@@ -39,6 +39,18 @@ app.get('/Rules', function(req, res){
 	res.send(complianceRules);
 });
 
+app.post('/Rules', function(req, response){
+	console.log('Update request for ' + req.body.Name + " " + req.body.Expression);
+	for(var i = 0; i < complianceRules.length; i++)
+	{
+		if(complianceRules[i].Name == req.body.Name)
+		{
+			complianceRules[i].Expression = req.body.Expression;
+		}
+	}
+	response.send(complianceRules);
+});
+
 app.get('/Portfolios', function(req, response)
 {
 	var portfolios = [];
